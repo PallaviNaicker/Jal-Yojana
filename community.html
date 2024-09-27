@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Community Water Issues</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #fafafa;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 40%;
+            margin-top: 20px;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        #postForm {
+            display: flex;
+            flex-direction: column;
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: #fff;
+            border: 1px solid #dbdbdb;
+            border-radius: 5px;
+        }
+
+        #postForm input, #postForm textarea {
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #dbdbdb;
+            border-radius: 5px;
+        }
+
+        #postForm button {
+            padding: 10px;
+            background-color: #3897f0;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #postForm button:hover {
+            background-color: #3186d1;
+        }
+
+        .post {
+            border: 1px solid #dbdbdb;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            background-color: #fff;
+            padding: 10px;
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .post-header img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .post-header h3 {
+            margin: 0;
+            font-size: 16px;
+        }
+
+        .post-content {
+            margin-bottom: 10px;
+        }
+
+        .post .actions {
+            display: flex;
+            align-items: center;
+        }
+
+        .post .actions span {
+            margin-right: 15px;
+            cursor: pointer;
+            color: #3897f0;
+        }
+
+        .post .actions span:hover {
+            text-decoration: underline;
+        }
+
+        .comments {
+            margin-top: 10px;
+        }
+
+        .commentForm input {
+            width: calc(100% - 22px);
+            padding: 10px;
+            border: 1px solid #dbdbdb;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        .commentForm button {
+            padding: 5px 10px;
+            background-color: #3897f0;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .commentForm button:hover {
+            background-color: #3186d1;
+        }
+
+        .comment {
+            margin: 10px 0;
+            padding: 10px;
+            border: 1px solid #dbdbdb;
+            border-radius: 5px;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Community Water Issues</h1>
+        <div id="postForm">
+            <input type="text" id="name" placeholder="Your Name" required>
+            <textarea id="content" placeholder="Write your thoughts..." required></textarea>
+            <button onclick="addPost()">Post</button>
+        </div>
+        <div id="postsContainer"></div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost/sih/sih_draft1';
+    
+        async function fetchPosts() {
+            try {
+                const response = await fetch(`${API_BASE}/get_posts.php`);
+                const posts = await response.json();
+                displayPosts(posts);
+            } catch (error) {
+                console.error('Error fetching posts:', error);
+            }
+        }
+    
+        async function addPost() {
+            const name = document.getElementById('name').value;
+            const content = document.getElementById('content').value;
+
+            console.log('Name:', name);
+            console.log('Content:', content);
+
+            if (name && content) {
+                try {
+                    const response = await fetch(`${API_BASE}/create_post.php`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ name, content })
+                    });
+
+                    console.log('Response status:', response.status);
+
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+
+                    const newPost = await response.json();
+                    console.log('New Post:', newPost);
+
+                    displayPosts(await fetchPosts()); // Refresh the posts list
+                    document.getElementById('name').value = '';
+                    document.getElementById('content').value = '';
+                } catch (error) {
+                    console.error('Error adding post:', error);
+                }
+            } else {
+                alert('Please fill in all fields.');
+            }
+        }
+    
+        async function likePost(postId) {
+            try {
+                const response = await fetch(`${API_BASE}/like_post.php?id=${postId}`, {
+                    method: 'GET'
+                });
+                const updatedPost = await response.json();
+                displayPosts(await fetchPosts()); // Refresh the posts list
+            } catch (error) {
+                console.error('Error liking post:', error);
+            }
+        }
+    
+        async function addComment(postId) {
+            const commentInput = document.getElementById(`comment-${postId}`);
+            const commentText = commentInput.value;
+    
+            if (commentText) {
+                try {
+                    await fetch(`${API_BASE}/add_comment.php`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ post_id: postId, comment: commentText })
+                    });
+                    commentInput.value = '';
+                    displayPosts(await fetchPosts()); // Refresh the posts list
+                } catch (error) {
+                    console.error('Error adding comment:', error);
+                }
+            } else {
+                alert('Please write a comment.');
+            }
+        }
+    
+        function toggleComments(postId) {
+            const commentsSection = document.getElementById(`comments-${postId}`);
+            commentsSection.style.display = commentsSection.style.display === 'none' ? 'block' : 'none';
+        }
+    
+        function displayPosts(posts) {
+            const postsContainer = document.getElementById('postsContainer');
+            postsContainer.innerHTML = '';
+            posts.forEach(post => {
+                const postElement = document.createElement('div');
+                postElement.classList.add('post');
+                postElement.innerHTML = `
+                    <div class="post-header">
+                        <img src="https://via.placeholder.com/40" alt="User Avatar">
+                        <h3>${post.name}</h3>
+                    </div>
+                    <div class="post-content">
+                        <p>${post.content}</p>
+                    </div>
+                    <div class="actions">
+                        <span onclick="likePost(${post.id})">Like (${post.likes})</span>
+                        <span onclick="toggleComments(${post.id})">Comments (${post.comments.length})</span>
+                    </div>
+                    <div class="comments" id="comments-${post.id}" style="display: none;">
+                        <div class="commentForm">
+                            <input type="text" id="comment-${post.id}" placeholder="Write a comment...">
+                            <button onclick="addComment(${post.id})">Comment</button>
+                        </div>
+                        <div class="commentList" id="commentList-${post.id}">
+                            ${post.comments.map(comment => `<div class="comment">${comment}</div>`).join('')}
+                        </div>
+                    </div>
+                `;
+                postsContainer.appendChild(postElement);
+            });
+        }
+    
+        // Fetch posts when the page loads
+        fetchPosts();
+    </script>
+</body>
+</html>

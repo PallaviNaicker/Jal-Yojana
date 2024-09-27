@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>User Details Form</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', Times, serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #bebedc;
+        }
+        .container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            max-width: 600px;
+            width: 100%;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 10px; /* Reduced bottom margin */
+        }
+        .header img {
+            width: 50px;
+            height: auto;
+        }
+        .header h2 {
+            margin: 10px 0 5px 0;
+            color: #007bff;
+        }
+        .header p {
+            margin: 5px 0; /* Reduced top and bottom margin */
+            color: #0a2d53;
+            font-size: 30px; /* Increased font size for the "Customer Complaint Form" */
+            font-weight: bold; /* Made the font bold */
+        }
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+        label {
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"],
+        input[type="file"],
+        textarea {
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        input[type="text"][readonly] {
+            background-color: #f4f4f4;
+        }
+        textarea {
+            resize: vertical;
+            height: 100px;
+        }
+        input[type="submit"] {
+            background: #007bff;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        input[type="submit"]:hover {
+            background: #0056b3;
+        }
+    </style>
+    <script>
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(showPosition, showError);
+            } else {
+                alert("Geolocation is not supported by this browser.");
+            }
+        }
+
+        function showPosition(position) {
+            document.getElementById('longitude').value = position.coords.longitude;
+            document.getElementById('latitude').value = position.coords.latitude;
+        }
+
+        function showError(error) {
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    alert("User denied the request for Geolocation.");
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    alert("Location information is unavailable.");
+                    break;
+                case error.TIMEOUT:
+                    alert("The request to get user location timed out.");
+                    break;
+                case error.UNKNOWN_ERROR:
+                    alert("An unknown error occurred.");
+                    break;
+            }
+        }
+
+        function validateForm() {
+            const problemField = document.getElementById('problem').value;
+            if (!problemField) {
+                alert("Problem description is required.");
+                return false;
+            }
+            return true;
+        }
+    </script>
+</head>
+<body onload="getLocation()">
+    <div class="container">
+        <div class="header">
+            <img src="logo.png" alt="Jal Yojana Logo">
+            <h2>Jal Yojana</h2>
+            <p>Customer Complaint Form</p>
+        </div>
+        <form action="submit.php" method="POST" enctype="multipart/form-data" onsubmit="return validateForm()">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="phone_number">Phone Number:</label>
+            <input type="text" id="phone_number" name="phone_number" required>
+            
+            <label for="address">Address:</label>
+            <input type="text" id="address" name="address" required>
+            
+            <label for="pincode">Pincode:</label>
+            <input type="text" id="pincode" name="pincode" required>
+            
+            <label for="longitude">Longitude:</label>
+            <input type="text" id="longitude" name="longitude" required readonly>
+            
+            <label for="latitude">Latitude:</label>
+            <input type="text" id="latitude" name="latitude" required readonly>
+            
+            <label for="problem">Problem Description:</label>
+            <textarea id="problem" name="problem" required></textarea>
+            
+            <label for="upload">Upload Image:</label>
+            <input type="file" id="upload" name="upload" accept="image/*" required>
+            
+            <input type="submit" value="Submit">
+        </form>
+    </div>
+</body>
+</html>

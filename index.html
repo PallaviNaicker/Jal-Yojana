@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jal Yojana</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
+
+        body {
+            background-image: url('blue-smoke-background-textured-wallpaper-high-resolution_53876-128239.jpg'); /* Ensure the path is correct */
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            font-family: Arial, sans-serif;
+        }
+        .title {
+            text-align: center;
+            font-size: 3cm;
+            margin-top: 20px;
+            color: #0d0d51;
+            font-family: 'Poppins', sans-serif;
+            text-shadow: 2px 2px 4px #FFFFFF;
+        }
+        .icon-container {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin-top: 20px; /* Reduced margin-top to decrease the distance */
+        }
+        .action-box {
+            width: 200px;
+            height: 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+            text-decoration: none;
+            border-radius: 15px;
+            margin: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .action-box:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+        }
+        .icon {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+        .icon-text {
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <div class="title">Jal Yojana</div>
+    <div class="icon-container">
+        <a href="explore_map.html" class="action-box" id="explore-maps" style="background-color: #FF6347;">
+            <i class="fas fa-map icon"></i>
+            <div class="icon-text">Explore Maps</div>
+        </a>
+        <a href="form.html" class="action-box" id="lodge-complaint" style="background-color: #4CAF50;">
+            <i class="fas fa-exclamation-circle icon"></i>
+            <div class="icon-text">Lodge Complaint</div>
+        </a>
+        <a href="login.html" class="action-box" id="view-statistics" style="background-color: #8a81ef;">
+            <i class="fas fa-chart-bar icon"></i>
+            <div class="icon-text">Authority Login</div>
+        </a>
+        <a href="feedback.html" class="action-box" id="give-feedback" style="background-color: #FFA500;">
+            <i class="fas fa-comment-alt icon"></i>
+            <div class="icon-text">Give Feedback</div>
+        </a>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
